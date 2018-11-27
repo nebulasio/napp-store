@@ -1,0 +1,27 @@
+\section{NApp Store Client}
+NApp Store Client是用户使用NApp的入口，安装在用户的终端设备\footnote{如用户的Mac，Windows及Linux设备，甚至iOS及Android设备，此外，我们应该优先考虑Mac设备}上，包括以下组件
+\begin{itemize}
+\item \textbf{P2P网络} --- P2P网络负责接入整个Nebulas主网的网络，同步Nebulas主网中的区块；
+\item \textbf{区块验证} --- 负责对接收到的区块进行必要的验证，丢掉不必要的、无效的区块；
+\item \textbf{NApp管理} --- 从经过验证的区块中读取\texttt{napp\_data}，并存储在本地的数据库中，建立相关的索引信息；
+\item \textbf{资产及私钥管理} --- 这不是NApp Store Client的主要功能，此功能仅仅是为了用户在使用NApp的过程中，能够进行必要的支付操作；
+\item \textbf{NApp依赖库} --- 包含一个NApp运行所必要的程序库，如UI、发起交易等；
+\item \textbf{UI交互} --- NApp Store Client将包含一个完整的、图形化的用户交互界面。
+\end{itemize}
+
+NApp Store Client从功能上来说包括三个部分，NApp的管理、NApp的安装及运行、资产及私钥管理。
+\paragraph{NApp的管理}
+NApp Store Client可以认为是Nebulas主网的一个轻节点，即，会同步所有的区块信息并进行必要的区块信息验证，但是不会成为出块或验证节点，亦不具备任何的挖矿功能。这一方面是因为用户的终端机性能较弱（包括硬件和网络），
+另一方面，也因为在终端机上进行开销较大的出块或验证操作会影响用户体验。
+
+NApp Store Client仅仅保存必要的NApp的信息，而不会保存所有的区块信息。在同步、验证完所有的区块信息后，NApp Store Client会提取其中的NApp信息，而抛弃区块内的其他信息。
+这主要是因为区块数据过为庞大，在用户终端中保存如此规模的数据会极大的影响用户体验。
+
+NApp Store Client会保存所有的NApp信息，包括同一个NApp的不同版本。这是为了让用户能够选择不同的版本。
+\paragraph{NApp的安装及运行}
+NApp Store Client会在UI中展示所有的NApp及NApp相关的信息，如NApp的图标、名称、描述及版本号。用户可以有选择安装指定的NApp。
+
+NApp的安装过程实际上是使用LLVM相关工具将NApp相应的LLVM IR编译为本地代码，并与NApp依赖的库链接成本地的可执行文件的过程。相应的，NApp的运行实际上是用户直接运行生成的、本地的可执行文件。
+
+\paragraph{资产及私钥管理}
+为了提供本地化的支付体验，NApp Store Client需要管理一定的资产及相应的私钥。需要注意的是，NApp Store Client本身没有更多的资产或私钥管理的需求，更多的功能是仅仅是可选的，而不是必须的。
