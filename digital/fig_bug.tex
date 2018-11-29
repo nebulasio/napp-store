@@ -1,0 +1,27 @@
+\begin{tikzpicture}
+\tikzset{
+  base/.style={draw, on grid, align=center, minimum height=2.5ex},
+  pn/.style={base, rectangle},
+}
+
+\node [pn] (a) at (0, 0) {Payment Checker};
+\node [pn] (b) at (-2, -2) {NReader for Author};
+\node [pn] (c) at (2, -2) {NReader Client};
+
+\draw[->, >=stealth] (c) to [out=80, in=340]  node [midway, right] {
+\circled{1}}  (a);
+\draw[->, dashed, >=stealth] (a) to [out=200, in=110] node [midway, left]{\circled{2}} (b);
+
+\draw[->, >=stealth] (b) to [out=70, in=230] node [midway, left]{\circled{3}} (a);
+
+\node at (a.north) {\circled{4}};
+
+\draw[->, dashed, >=stealth] (a) to [out=260, in=40] node [midway, right]{\circled{5}} (b);
+\draw[->, dashed, >=stealth] (a) to [out=300, in=110] node [midway, left]{\circled{5}} (c);
+
+\node [anchor=west] at (5, 0) {\circled{1}：支付};
+\node [anchor=west] at (5, -0.5) {\circled{2}：获取支付信息};
+\node [anchor=west] at (5, -1) {\circled{3}：提交密文};
+\node [anchor=west] at (5, -1.5) {\circled{4}：验证密文是否正确};
+\node [anchor=west] at (5, -2) {\circled{5}：完成最终支付及内容交付};
+\end{tikzpicture}

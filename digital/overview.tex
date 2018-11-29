@@ -1,0 +1,67 @@
+\section{系统架构}
+
+NReader可以有多个实例，不同的实例可以视为不同的出版商或媒体，例如系统中可以存在一个用于发布新闻的NReader实例、一个用于发布网络小说的NReader实例、
+一个用于某垂直领域咨询的NReader实例。多个实例之间是相互独立的，也就是说一个实例的NReader Client不能查看另一个实例的NReader for Author发布的内容。
+
+每个实例包含四个部分：
+\begin{itemize}
+\item \textbf{NReader for Author} --- 供作者使用的客户端，这是一个NApp Store之上的NApp；
+\item \textbf{Bookkeeper} --- 用于记录所有书目及元信息的智能合约；
+\item \textbf{NReader Client} --- 特指读者使用的客户端，这是一个NApp Store之上的NApp；
+\item \textbf{Payment Checker} --- 用于完成内容交付及支付确认的智能合约。 
+\end{itemize}
+\noindent 注意，对于NReader Client及NReader for Author这两个NApp，需要通过NApp Store Client安装。
+
+不同的NReader实例由不同的主体提交、部署，在NApp Store Client中会存在多个不同的NReader Client及NReader for Author。
+
+NReader适用于发布持续更新的小说、专栏、新闻、咨询等，因此，NReader按照一定方式组织内容，并使得该组织方式具有一定的通用性。
+
+NReader使用Bookkeeper组织最上层的\textbf{阅读单元}，一个阅读单元可以表示一本小说、一个报刊、一个新闻门类或者一个专栏。Bookkeeper中记录多个阅读单元。
+一个阅读单元包含多个\textbf{内容单元}，一个内容单元可以理解为小说中的一个章节、报刊中的某一期、新闻门类中的某篇新闻稿或者专栏中的某篇文章。
+内容单元也是NReader中最小的付费购买单元。
+
+NReader的交互有几个不同的环节，包括作者创建阅读单元、新增内容单元，读者购买内容单元，作者完成内容交付几个环节。更多的环节，如作者或读者查看阅读单元及内容单元列表，是简单且直观的，因此，本文不再赘述。
+
+\subsection{作者创建阅读单元、新增内容单元}
+作者创建阅读单元、新增阅读单元都是通过NReader for Author与相关的智能合约交互。
+
+\paragraph{创建阅读单元}
+创建阅读单元是通过NReader for Author向Bookkeeper提交如下的信息
+\[
+(n, d, a, h)
+\]
+\noindent 其中\(n\)为阅读单元的名字，长度不超过15个字，\(d\)为阅读单元的简介，长度不超过140，\(a\)为提交者的地址，\(h\)为hash值，其计算方式为
+\[h = H(n, d, a)\]
+\noindent 其中\(H\)为hash函数。
+
+\paragraph{新增内容单元}
+向阅读单元\(i\)新增内容单元\(j\)是通过NReader for Author向Payment Checker提交如下的信息
+\[(h_i, x_j, t_j, b_j, p_j, g_j )\]
+\noindent 其中\(h_i\)为阅读单元\(i\)在Bookkeeper中对应的hash，\(x_j\)是该内容单元在阅读单元中的序号，按从小到大排列，\(t_j\)是该内容单元的题目，长度不超过15，\(b_j\)为该内容单元的简介，不超过50，\(p_j\)是该内容单元的价格，
+\(g_j\)则为该内容单元的hash。
+
+注意，新增阅读单元并不会将内容单元本身的明文信息提交到区块链上，因此，并不会泄露内容本身。
+
+\subsection{购买内容单元}
+购买内容单元需要通过NReader Client操作。NReader Client会通过NApp Store Client同步的区块信息得到最新的阅读单元及内容单元，并展示给用户。
+
+用户在选择指定的内容单元进行购买之后，需要支付一定的NAS给Payment Checker，如\reffig{fig:buy}中\circled{1}所示。
+
+如果支付的NAS低于作者指定的定价，则支付失败。如果在一定时间之后，内容仍未支付，读者可以要求退款。
+
+\subsection{内容交付}
+完成内容交付的流程是由NReader for Author自动完成的，并不需要作者参与，但是需要NReader for Author在线。
+
+NReader for Author通过同步区块信息了解到当前相应内容单元的支付情况，如\reffig{fig:buy}中\circled{2}所示，此时，NReader for Author会从Payment Checker中得到以下信息，
+\[(r, g)\]
+\noindent 其中，\(r\)为所购买的读者的公钥（地址？），\(g\)为读者所购买的内容单元的hash。此时，NReader for Author会在本地查找到\(g\)所对应的
+内容明文，并对明文使用\(r\)进行加密，得到加密的内容单元\(m^{\prime}\)，并将其发送到Payment Checker，如\reffig{fig:buy}中\circled{3}所示，即，发送内容如下
+\[(r, g, m^{\prime})\]
+Payment Checker在收到相应的内容之后，需要验证\(m^{\prime}\)对应的hash正是\(g\)，此处需要使用{\color{red} 零知识证明？}，如\reffig{fig:buy}中\circled{4}所示。在验证通过后，Payment Checker将相应的NAS发放给作者，并将相应的密文发送给读者，如\reffig{fig:buy}中\circled{5}所示。
+
+\begin{figure}
+\centering
+\input{fig_bug.tex}
+\caption{内容购买及交付流程}
+\label{fig:buy}
+\end{figure}
