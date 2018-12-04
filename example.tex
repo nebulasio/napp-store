@@ -5,4 +5,6 @@ NApp Store需要面临很多问题，此处仅讨论一些必要的权衡以及�
 另一方面，开发者的收益可以通过NApp内的支付或者开发者激励协议（DIP）来保证。
 \subsection{支付流程}
 我们认为，每个NApp都需要一定的支付场景，因此，我们希望每个NApp的支付体验是一致的。为此，需要NApp Store Client提供统一的支付流程，以库的形式提供给NApp使用。
+
 \subsection{NApp升级流程}
+一个NApp实质上是一个具有一定标识的LLVM IR，且该LLVM IR是放在链上的，因此NApp的升级是通过NBRE的能力完成的。

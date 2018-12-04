@@ -12,10 +12,9 @@ NReader可以有多个实例，不同的实例可以视为不同的出版商或�
 \end{itemize}
 \noindent 注意，对于NReader Client及NReader for Author这两个NApp，需要通过NApp Store Client安装。
 
-不同的NReader实例由不同的主体提交、部署，在NApp Store Client中会存在多个不同的NReader Client及NReader for Author。
+不同的NReader实例由不同的主体提交、部署，因此，在NApp Store Client中会存在多个不同的NReader Client及NReader for Author，同样地，在链上则存在多个不同的Bookkeeper及Payment Checker。
 
 NReader适用于发布持续更新的小说、专栏、新闻、咨询等，因此，NReader按照一定方式组织内容，并使得该组织方式具有一定的通用性。
-
 NReader使用Bookkeeper组织最上层的\textbf{阅读单元}，一个阅读单元可以表示一本小说、一个报刊、一个新闻门类或者一个专栏。Bookkeeper中记录多个阅读单元。
 一个阅读单元包含多个\textbf{内容单元}，一个内容单元可以理解为小说中的一个章节、报刊中的某一期、新闻门类中的某篇新闻稿或者专栏中的某篇文章。
 内容单元也是NReader中最小的付费购买单元。
@@ -57,7 +56,7 @@ NReader for Author通过同步区块信息了解到当前相应内容单元的�
 \noindent 其中，\(r\)为所购买的读者的公钥（地址？），\(g\)为读者所购买的内容单元的hash。此时，NReader for Author会在本地查找到\(g\)所对应的
 内容明文，并对明文使用\(r\)进行加密，得到加密的内容单元\(m^{\prime}\)，并将其发送到Payment Checker，如\reffig{fig:buy}中\circled{3}所示，即，发送内容如下
 \[(r, g, m^{\prime})\]
-Payment Checker在收到相应的内容之后，需要验证\(m^{\prime}\)对应的hash正是\(g\)，此处需要使用{\color{red} 零知识证明？}，如\reffig{fig:buy}中\circled{4}所示。在验证通过后，Payment Checker将相应的NAS发放给作者，并将相应的密文发送给读者，如\reffig{fig:buy}中\circled{5}所示。
+Payment Checker在收到相应的内容之后，需要验证\(m^{\prime}\)对应的hash正是\(g\)，此处需要使用{\color{red} 零知识证明（需要进一步验证该技术细节）}，如\reffig{fig:buy}中\circled{4}所示。在验证通过后，Payment Checker将相应的NAS发放给作者，并将相应的密文发送给读者，如\reffig{fig:buy}中\circled{5}所示。
 
 \begin{figure}
 \centering
