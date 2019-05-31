@@ -11,6 +11,12 @@ NApp dev tools仅由开发者使用，是开发NApp所必要的生产工具。
 NApp Store Client接入Nebulas公链的P2P网络，实时同步Nebulas公链中的区块，进行必要的区块信息验证，提取区块中的IR，并通过UI展示给用户。
 在用户通过NApp的相关信息，选择想要执行的NApp之后，NApp Store Client将用户选中的IR与必要的库链接生成本地化的可执行应用，并执行。
 
+\begin{figure}[ht!]
+\centering
+  \includegraphics[width=.9\textwidth]{flow.jpg}
+\caption{NApp Store 流程图}
+\end{figure}
+
 \subsection{NApp在链上的数据格式}
 此处，我们给出NApp在链上的数据格式，以表明开发者需要提交哪些信息，并为后续的NApp Store Client的展示提供必要的数据。
 
@@ -56,3 +62,4 @@ NApp并不是简单的智能合约或者简单的与智能合约的交互，NApp
 NApp则基于NApp dev tools包含的SDK与区块链进行交互，并使用其中的SDK构建图形化的用户交互界面，而进一步的流程及细节则由SDK提供保证，既保证了开发的简易性，又提供了体验的一致性。
 
 另外，相对于DApp，NApp的一个重要能力是能够以去中心化的方式完成自动升级。对于使用了Web的DApp，可以通过在服务器中部署新的代码，而对于使用了客户端的用户，则依赖于用户的主动升级。
+
